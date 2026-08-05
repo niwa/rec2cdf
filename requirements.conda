@@ -1,0 +1,10 @@
+pyinstaller
+netcdf4
+psycopg2
+keyring
+appdirs
+packaging
+geopandas
+pyqt
+PyQTWebEngine
+tenacity

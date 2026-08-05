@@ -1,0 +1,1870 @@
+{
+    "global": {
+        "title": "TopNet spatial data for the {{name}} river",
+        "comment": "TopNet spatial data, catchment {{name}}, created by rec2cdf, for REC reach: {{catchrchid}}",
+        "river_basin": "{{name}}",
+        "river_basin_id": {{catchrchid}},
+        "network_aggregation_method": "strahler{{order}}",
+        "note": "Index nrch count from 0!!!",
+        "institution": "NIWA",
+        "references": "",
+        "source": "{{condsn}}",
+        "conventions": "CF-1.0 with extensions",
+        "file_creation_time": "{{now}}",
+        "reference_geoid": "WGS84",
+        "code_version": "{{code_version}}",
+        "db_version": "{{db_version}}",
+        "no_sub_catchments": {{no_sub_catchments}},
+        "truncate_rchids": "{{truncate_rchids}}",
+        "region": "{{region}}"
+    },
+    "station_vars": {
+        "station": {
+            "type": "i4",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "station_type": "river flow station",
+                "observed_variables": "Flow"
+            }
+        },
+        "station_id": {
+            "type": "i4",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "site number from TIDEDA database",
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_name": {
+            "type": "S1",
+            "dims": ["station", "station_name_length"],
+            "attributes": {
+                "long_name": "station name",
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_lat": {
+            "type": "f8",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "standard_name": "latitude",
+                "long_name": "station latitude",
+                "units": "degrees_north",
+                "axis": "Y",
+                "valid_min": -90.0,
+                "valid_max": 90.0,
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_lon": {
+            "type": "f8",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "standard_name": "longitude",
+                "long_name": "station longitude",
+                "units": "degrees_east",
+                "axis": "X",
+                "valid_min": -180.0,
+                "valid_max": 180.0,
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_altitude": {
+            "type": "f8",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "station altitude",
+                "standard_name": "surface_altitude",
+                "units": "meter",
+                "valid_min": 0.0,
+                "valid_max": 9000.0,
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_rchid": {
+            "type": "i4",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "river reach identifier related to station",
+                "comment": "reach identifier (corresponds to variable rchid) of stream reach at which station is situated",
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_nrch": {
+            "type": "i4",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "river reach index related to station",
+                "comment": "reach index (corresponds to variable rchindex) of stream reach at which station is situated",
+                "coordinates": "station_lat station_lon"
+            }
+        },
+        "station_uparea": {
+            "type": "f8",
+            "dims": ["station"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "station upstream area",
+                "units": "meter2",
+                "valid_min": 100.0,
+                "valid_max": 1e+17,
+                "coordinates": "station_lat station_lon"
+            }
+        }
+    },
+    "flowstats_vars": {
+        "qm": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "mean annual flood",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "coordinates": "end_lat end_lon",
+                "scale_factor": 1e-3
+            }
+        },
+        "qm_error": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "standard error of mean annual flood",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "coordinates": "end_lat end_lon",
+                "scale_factor": 1e-3
+            }
+        },
+        "q100": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "100-year flood",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "coordinates": "end_lat end_lon",
+                "scale_factor": 1e-3
+            }
+        },
+        "q100_error": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "standard error of 100-year flood",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "coordinates": "end_lat end_lon",
+                "scale_factor": 1e-3
+            }
+        },
+        "rch_minflow": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "Minimum environmental flow",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "coordinates": "end_lat end_lon",
+                "scale_factor": 1e-3
+            }
+        }
+    },
+    "wetness_vars": {
+        "lambda": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "lambda - average basin value of ln(a/tanb) distribution",
+                "scale_factor": 0.1,
+                "valid_min": 0,
+                "valid_max": 300
+            }
+        },
+        "numatan": {
+            "type": "i4",
+            "dims": ["nrch"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "number of points in ln(a/tanb) distribution",
+                "scale_factor": 1,
+                "valid_min": 0,
+                "valid_max": {{maxbins}}
+            }
+        },
+        "atanval": {
+            "type": "i4",
+            "dims": ["nrch", "maxbins"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "values of the ln(a/tanb) distribution",
+                "valid_min": 0,
+                "valid_max": 300, 
+                "scale_factor": 0.1
+            }
+        },
+        "atanfrq": {
+            "type": "f8",
+            "dims": ["nrch", "maxbins"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "cumulative frequencies of the ln(a/tanb) distribution",
+                "units": "1",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "scale_factor": 0.0001
+            }
+        }
+    },
+    "soil_veg_vars": {
+        "topmodf": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "TopNet f-parameter for sub-basin",
+                "description": "homogeneous default parameter",
+                "units": "meter-1",
+                "valid_min": 0.001,
+                "valid_max": 15,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "topmodm": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "TopNet m-parameter for sub-basin",
+                "description": "homogeneous default parameter",
+                "units": "meter",
+                "valid_min": 0.01,
+                "valid_max": 1000,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "topmodn": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "TopNet n-parameter for sub-basin",
+                "description": "homogeneous default parameter",
+                "valid_min": 0.0,
+                "valid_max": 100.0,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "hydcon0": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "standard_name": "soil_hydraulic_conductivity_at_saturation",
+                "description": "homogeneous default parameter",
+                "long_name": "K0 for sub-basin",
+                "units": "meter second-1",
+                "valid_min": 1e-8,
+                "valid_max": 0.1,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "dtheta1": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "dth1 for sub-basin",
+                "description": "derived from FSL",
+                "units": "1",
+                "valid_min": 0.01,
+                "valid_max": 0.4,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "dtheta2": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "dth2 for sub-basin",
+                "description": "derived from FSL",
+                "units": "1",
+                "valid_min": 0.05,
+                "valid_max": 0.4,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+
+        "soilcap": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "soil capacity for sub-basin",
+                "description": "derived from FSL",
+                "units": "meter",
+                "valid_min": 0.005,
+                "valid_max": 2,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "ch_cexp": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Clapp-Hornberger c-exponent",
+                "description": "homogeneous default parameter",
+                "valid_min": 0.0,
+                "valid_max": 20,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "ga_psif": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Green-Ampt wetting front suction",
+                "description": "homogeneous default parameter",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 0.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "overvel": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "overland flow velocity",
+                "description": "homogeneous default parameter",
+                "units": "meter second-1",
+                "valid_min": 0.0001,
+                "valid_max": 3,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "canscap": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "canopy capacity for sub-basin",
+                "description": "derived from LCDB via lookup",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 0.005,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "canenhf": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "canopy evap enhancement factor for sub-basin",
+                "description": "derived from LCDB via lookup",
+                "valid_min": 0,
+                "valid_max": 2,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "salbedo": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "standard_name": "surface_albedo",
+                "long_name": "surface albedo for sub-basin",
+                "description": "derived from LCDB via lookup",
+                "units": "1",
+                "valid_min": 0,
+                "valid_max": 1,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "atmlaps": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "standard_name": "air_temperature_lapse_rate",
+                "description": "homogeneous default parameter",
+                "long_name": "atmospheric lapse rate for sub-basin",
+                "units": "kelvin meter-1",
+                "valid_min": 0,
+                "valid_max": 1,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "snowddf": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "snow degree-day factor for sub-basin",
+                "description": "homogeneous default parameter",
+                "units": "millimeter kelvin-1 day-1",
+                "valid_min": 0.1,
+                "valid_max": 7.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "accmelt": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "temperature threshold for snow accumulation and melt",
+                "description": "homogeneous default parameter",
+                "units": "kelvin",
+                "valid_min": 263.15,
+                "valid_max": 283.15,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "th_accm": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "temperature threshold for snow accumulation",
+                "description": "homogeneous default parameter",
+                "units": "kelvin",
+                "valid_min": 272.16,
+                "valid_max": 275.16,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "th_melt": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "temperature threshold for snow melt",
+                "description": "homogeneous default parameter",
+                "units": "kelvin",
+                "valid_min": 272.16,
+                "valid_max": 275.16,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "gucatch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Multiplier for under-catch of precipitation",
+                "description": "homogeneous default parameter",
+                "valid_min": 0.5,
+                "valid_max": 1.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "cv_snow": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Coefficient of variation in SWE",
+                "description": "homogeneous default parameter",
+                "valid_min": 0.5,
+                "valid_max": 1.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "tncoeff": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Transfer coefficent to relate temp gradient to energy flux",
+                "description": "homogeneous default parameter",
+                "units": "W m-2 K-1",
+                "valid_min": 0,
+                "valid_max": 1,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "windcal": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Turbulent transfer coefficient for rain-on-snow events",
+                "description": "homogeneous default parameter",
+                "units": "m s-1",
+                "valid_min": 0,
+                "valid_max": 5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "snowamp": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Seasonal amplitude of the melt factor",
+                "description": "homogeneous default parameter",
+                "units": "millimeter kelvin-1 day-1",
+                "valid_min": 0,
+                "valid_max": 7.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "snowros": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "increase in melt during rain on snow events",
+                "description": "homogeneous default parameter",
+                "units": "millimeter kelvin-1 day-1",
+                "valid_min": 0,
+                "valid_max": 5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "decmelt": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "decrease in melt due to higher albedo after fresh snow",
+                "description": "homogeneous default parameter",
+                "units": "millimeter kelvin-1 day-1",
+                "valid_min": 0,
+                "valid_max": 7.5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "albdecy": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "time decay of snow albedo",
+                "description": "homogeneous default parameter",
+                "units": "day",
+                "valid_min": 0.1,
+                "valid_max": 15,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "sdevtmp": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "Sub-grid temperature variaility",
+                "description": "homogeneous default parameter",
+                "units": "kelvin",
+                "valid_min": 0,
+                "valid_max": 50,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "watflow": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "transmissibility of water through snow",
+                "description": "homogeneous default parameter",
+                "units": "meter second-1",
+                "valid_min": 0.001,
+                "valid_max": 1,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "fsnoalb": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "fresh snow albedo",
+                "description": "homogeneous default parameter",
+                "units": "1",
+                "valid_min": 0.5,
+                "valid_max": 0.95,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "osnoalb": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "old snow albedo",
+                "description": "homogeneous default parameter",
+                "units": "1",
+                "valid_min": 0.3,
+                "valid_max": 0.7,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "snowz0n": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "log10 of snow roughness length",
+                "description": "homogeneous default parameter",
+                "units": "meter",
+                "valid_min": -4,
+                "valid_max": -2,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "snocond": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "snow conductivity distance",
+                "description": "homogeneous default parameter",
+                "units": "watt meter-1 kelvin-1 meter-1",
+                "valid_min": 0.01,
+                "valid_max": 100,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "canstor": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "standard_name": "lwe_thickness_of_canopy_water_amount",
+                "description": "homogeneous default parameter",
+                "long_name": "initial canopy storage for sub-basin",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 0.005,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "soilh2o": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "standard_name": "lwe_thickness_of_soil_moisture_content",
+                "description": "homogeneous default parameter",
+                "long_name": "initial soil moisture for sub-basin",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 2,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "zbarh2o": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "ki": false,
+            "attributes": {
+                "long_name": "initial water table depth for sub-basin",
+                "description": "homogeneous default parameter",
+                "units": "meter",
+                "valid_min": -0.5,
+                "valid_max": 5,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        },
+        "rpawstar": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "rpawstar for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0.4,
+                    "valid_max": 1,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "mpor_s": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "mpor_s for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0,
+                    "valid_max": 17.5,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "mpor_d": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "mpor_d for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0,
+                    "valid_max": 20,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "prd_mid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "prd_mid for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0,
+                    "valid_max": 1.05,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "paw_mid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "paw_mid for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0,
+                    "valid_max": 250,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "alpha_irr": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "alpha_irrig for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "1",
+                    "valid_min": 0,
+                    "valid_max": 1,
+                    "scale_factor": 1e-4,
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "malf_7": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "malf_7 for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "cumecs",
+                    "valid_min": 0,
+                    "valid_max": 1e20,
+                    "scale_factor": 1e-5, 
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "irrig_area": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "irrig_area for sub-basin",
+                    "description": "derived from FSL",
+                    "units": "meter2",
+                    "valid_min": 0,
+                    "valid_max": 1e20,
+                    "scale_factor": 1e3, 
+                    "coordinates": "cen_lat cen_lon"
+                }
+            },
+        "ki": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "ki": true,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "saturated hydraulic conductivity(ksat)",
+                "description": "derived from LCR",
+                "units": "mm hour-1",
+                "valid_min": 0,
+                "valid_max": 288,
+                "scale_factor": 1e-4,
+                "coordinates": "cen_lat cen_lon"
+            }
+        }
+    },
+    "elevation_vars": {
+        "elevfrq": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxbins"],
+            "attributes": {
+                "long_name": "frequencies of the elevation distribution",
+                "units": "1",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "scale_factor": 0.0001
+            }
+        },
+        "elevval": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxbins"],
+            "attributes": {
+                "long_name": "values of the elevation distribution",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 10000
+            }
+        },
+        "numelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "number of points in elevation distribution",
+                "valid_min": 0,
+                "valid_max": {{maxbins}}
+            }
+        }
+    },
+    "stream_distance_vars": {
+        "numover": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "number of points in stream distance distribution",
+                "valid_min": 0,
+                "valid_max": {{maxbins}}
+            }
+        },
+        "overval": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxbins"],
+            "attributes": {
+                "long_name": "values of the stream distance distribution",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 20000
+            }
+        },
+        "overfrq": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxbins"],
+            "attributes": {
+                "long_name": "cumulative frequencies of the stream distance distribution",
+                "units": "1",
+                "scale_factor": 0.0001,
+                "valid_min": 0,
+                "valid_max": 10000
+            }
+        }
+    },
+    "lake_vars": {
+        "rch_nlake": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "lake index",
+                "valid_min": 0,
+                "valid_max": 6000
+            }
+        },
+        "rch_lakeid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "lake identifier",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "rch_lake_area": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "subbasin catchment area submerged in lake",
+                "units": "meter2",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "rch_lake_length": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "subbasin reach length submerged in lake",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_area": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake outlet subbasin catchment area submerged in lake",
+                "units": "meter2",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_length": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake outlet subbasin reach length submerged in lake",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lakeid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake index",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lakeindex": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_lakeid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "downstream lake identifier",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_nlake": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "downstream lake index",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_rchid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "downstream reach identifier",
+                "valid_min": 0.0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_ds_nrch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "downstream reach index",
+                "valid_min": 0,
+                "valid_max": 6000
+            }
+        },
+        "lk_refarea": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake surface area (ref)",
+                "units": "meter2",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "lk_refelev": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake elevation (ref)",
+                "units": "meter2",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_refdeph": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "lake depth (ref)",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_shape_m": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Shape parameter in height to area function (Nilsson model)",
+                "valid_min": 0,
+                "valid_max": 1e17,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_he2ar_c": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Constant in height to area function (Rupp model)",
+                "valid_min": 0,
+                "valid_max": 1e17,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_he2ar_d": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Constant in height to area function (Rupp model)",
+                "valid_min": 0,
+                "valid_max": 100,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_hghtspl": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Reservoir level at spillway",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 5000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_hghteco": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Minimum reservoir level for ecological functions",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 1000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_hghtlow": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Reservoir level below which discharge is zero",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 1000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_dscheco": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Discharge at he",
+                "units": "meter3",
+                "valid_min": 0,
+                "valid_max": 2000000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_dschspl": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Discharge at spillway level hs",
+                "units": "meter3",
+                "valid_min": 0,
+                "valid_max": 2000000,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_ratecva": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Stage-discharge rating curve parameter a",
+                "valid_min": 0,
+                "valid_max": 1e17,
+                "scale_factor": 0.001
+            }
+        },
+        "lk_ratecvb": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "Stage-discharge rating curve parameter b",
+                "valid_min": 0,
+                "valid_max": 100,
+                "scale_factor": 0.001
+            }
+        },
+        "numuplk": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "number of upstream lakes for each reach",
+                "valid_min": 0,
+                "valid_max": {{maxup}}
+            }
+        },
+        "uprch_nlake": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxup"],
+            "attributes": {
+                "long_name": "identifier of upstream reach",
+                "comment": "position of upnstream lake in variable lakeid, index counts from 0!!!",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "uprch_lakeid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxup"],
+            "attributes": {
+                "long_name": "identifier of upstream lake",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        }
+    },
+    "geom_vars": {
+        "basarea_noagg": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "area of sub-basin",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "unit": "m2"
+            }
+        },
+        "basarea": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "area of sub-basin",
+                "units": "meter2",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 100,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "baselev_noagg": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "average elevation of sub-basin",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "unit": "m"
+            }
+        },
+        "baselev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "altitude",
+                "long_name": "average elevation of sub-basin",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000
+            }
+        },
+        "basmaxelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "maximum elevation of sub-basin",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000
+            }
+        },
+        "basminelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "minimum elevation of sub-basin",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000
+            }
+        },
+        "basstdelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "standard deviation of elevation of sub-basin",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000
+            }
+        },
+        "cen_lat": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "latitude",
+                "long_name": "centroid latitude of sub-basin",
+                "units": "degrees_north",
+                "axis": "Y",
+                "valid_min": -90,
+                "valid_max": 90,
+                "scale_factor": 0.001
+            }
+        },
+        "cen_lon": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "longitude",
+                "long_name": "centroid longitude of sub-basin",
+                "units": "degrees_east",
+                "axis": "X",
+                "valid_min": -180,
+                "valid_max": 180,
+                "scale_factor": 0.001
+            }
+        },
+        "cen_nzmge": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "centroid easting in NZ grid of sub-basin",
+                "units": "meter",
+                "axis": "X",
+                "valid_min": 1900000,
+                "valid_max": 3000000
+            }
+        },
+        "cen_nzmgn": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "centroid northing in NZ grid of sub-basin",
+                "units": "meter",
+                "axis": "Y",
+                "valid_min": 5200000,
+                "valid_max": 6800000
+            }
+        },
+        "end_lat": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "latitude",
+                "long_name": "latitude of downstream end of stream reach",
+                "units": "degrees_north",
+                "axis": "Y",
+                "valid_min": -90,
+                "valid_max": 90,
+                "scale_factor": 0.001
+            }
+        },
+        "end_lon": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "longitude",
+                "long_name": "longitude of downstream end of stream reach",
+                "units": "degrees_east",
+                "axis": "X",
+                "valid_min": -180,
+                "valid_max": 180,
+                "scale_factor": 0.001
+            }
+        },
+        "end_nzmge": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "easting in NZ grid of downstream end of stream reach",
+                "units": "meter",
+                "axis": "X",
+                "valid_min": 1900000,
+                "valid_max": 3000000
+            }
+        },
+        "end_nzmgn": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "northing in NZ grid of downstream end of stream reach",
+                "units": "meter",
+                "axis": "Y",
+                "valid_min": 5200000,
+                "valid_max": 6800000
+            }
+        },
+        "nonaggrch_area": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxe"],
+            "attributes": {
+                "long_name": "area of original reaches per aggregated reach",
+                "valid_min": 0,
+                "valid_max": {{max_i4}},
+                "unit": "m2"
+            }
+        },
+        "nonaggrch_elev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxe"],
+            "attributes": {
+                "long_name": "elevation of original reaches per aggregated reach",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "unit": "m"
+            }
+        },
+        "nonaggrch_frq": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxe"],
+            "attributes": {
+                "long_name": "area proportion of original reach",
+                "valid_min": 0,
+                "valid_max": 100,
+                "scale_factor": 0.01
+            }
+        },
+        "rchlength": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "length of stream reach",
+                "units": "meter",
+                "valid_min": 10,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "rchman_n": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "Mannings n of stream reach",
+                "units": "second meter**(-1/3)",
+                "valid_min": 0.0,
+                "valid_max": 300,
+                "scale_factor": 0.001
+            }
+        },
+        "rchmaxelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "maximum elevation of stream reach",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "scale_factor": 0.01
+            }
+        },
+        "rchminelev": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "minimum elevation of stream reach",
+                "units": "meter",
+                "coordinates": "cen_lat cen_lon",
+                "valid_min": 0,
+                "valid_max": 9000,
+                "scale_factor": 0.01
+            }
+        },
+        "rchslope": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "average slope of stream reach",
+                "valid_min": 0.0005,
+                "valid_max": 3,
+                "units": "1",
+                "comment": "slope angle in tan",
+                "scale_factor": 0.0001
+            }
+        },
+        "rchwidth": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "width of stream reach",
+                "units": "meter",
+                "valid_min": 10,
+                "valid_max": {{max_i4}},
+                "scale_factor": 0.01,
+                "comment": "The streamwidth is currently calculated as a function of upstream area width = {attrs.STREAM_WIDTH_A} + area ^ {attrs.STREAM_WIDTH_B}"
+            }
+        },
+        "start_lat": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "latitude",
+                "long_name": "latitude of upstream end of stream reach",
+                "units": "degrees_north",
+                "axis": "Y",
+                "valid_min": -90,
+                "valid_max": 90,
+                "scale_factor": 0.001
+            }
+        },
+        "start_lon": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "standard_name": "longitude",
+                "long_name": "longitude of upstream end of stream reach",
+                "units": "degrees_east",
+                "axis": "X",
+                "valid_min": -180,
+                "valid_max": 180,
+                "scale_factor": 0.001
+            }
+        },
+        "start_nzmge": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "easting in NZ grid of upstream end of stream reach",
+                "units": "meter",
+                "axis": "X",
+                "valid_min": 1900000,
+                "valid_max": 3000000
+            }
+        },
+        "start_nzmgn": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "northing in NZ grid of upstream end of stream reach",
+                "units": "meter",
+                "axis": "Y",
+                "valid_min": 5200000,
+                "valid_max": 6800000
+            }
+        },
+        "streamorder": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "Strahler order of stream reach",
+                "valid_min": 1,
+                "valid_max": 100
+            }
+        },
+        "uparea": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "upstream area of stream reach",
+                "units": "meter2",
+                "coordinates": "end_lat end_lon",
+                "valid_min": 0,
+                "valid_max": 1e+17,
+                "scale_factor": 1000
+            }
+        }
+    },
+    "topo_vars": {
+        "blue": {
+            "type": "b",
+            "fillvalue": 2,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "1 if non-agg reach is required to make connected network",
+                "valid_min": 0,
+                "valid_max": 1
+            }
+        },
+        "dsrch_nrch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "downstream reach index",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "dsrch_rchid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "downstream reach identifier",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "nonaggrch_nrch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxe"],
+            "attributes": {
+                "long_name": "index of original reaches per aggregated reach",
+                "valid_min": 0,
+                "valid_max": 100000
+            }
+        },
+        "nonaggrch_rchid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxe"],
+            "attributes": {
+                "long_name": "Identifier for original reaches per aggregated reach",
+                "valid_min": 0,
+                "valid_max": 100000000
+            }
+        },
+        "nrch_agg": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "index (nrch) of aggegated reach for each non-aggregated reach",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "numnonaggrch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "Number of original reaches per aggregated reach",
+                "valid_min": 0,
+                "valid_max": {{maxe}}
+            }
+        },
+        "numuprch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "number of upstream reaches",
+                "valid_min": 0,
+                "valid_max": 10
+            }
+        },
+        "rchid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "identifier for stream reach",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "rchid_agg": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "identifier of aggegated reach for each non-aggregated reach",
+                "valid_min": 0,
+                "valid_max": 100000000
+            }
+        },
+        "rchid_noagg": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch_noagg"],
+            "attributes": {
+                "long_name": "identifier for stream reach",
+                "valid_min": 0,
+                "valid_max": 100000000
+            }
+        },
+        "rchindex": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "index for stream reach",
+                "comment": "describes the way we count the rchid variable (0,1,..), for referencing use in the dsrch_nrch uprch_nrch, hyd_stn_nrch variables.",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "uprch_nrch": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxup"],
+            "attributes": {
+                "long_name": "index of upstream reach",
+                "comment": "position of upnstream reach in variable rchid, index counts from 0!!!",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "uprch_rchid": {
+            "type": "i4",
+            "fillvalue": -9999,
+            "dims": ["nrch", "maxup"],
+            "attributes": {
+                "long_name": "identifier of upstream reach",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        }
+    },
+    "water_transfer_vars": {
+        "trans_rchid_to_rchid": {
+            "type": "i4",
+            "dims": ["nrch", "water_transfer_endpts"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "water is transfered from first rchid to second rchid",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "trans_rch_qmin": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "the minimum flow of reach below which water transfer will not be done",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": 5000
+            }
+        },
+        "trans_rch_qmax": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nrch"],
+            "attributes": {
+                "long_name": "the maximum amount of water can be transferred due to the size of water pipe",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": 5000
+            }
+        },
+        "trans_lakeid_to_rchid": {
+            "type": "i4",
+            "dims": ["nlake", "water_transfer_endpts"],
+            "fillvalue": -9999,
+            "attributes": {
+                "long_name": "water is transfered from lakeid to rchid",
+                "valid_min": 0,
+                "valid_max": {{max_i4}}
+            }
+        },
+        "trans_lk_qmax": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "the maximum amount of water can be transferred due to the size of water pipe",
+                "units": "meter3 second-1",
+                "valid_min": 0,
+                "valid_max": 5000
+            }
+        },
+        "trans_lk_level_min": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "the minimum lake level below which water transfers will not be done",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 5000
+            }
+        },
+        "trans_lk_level_max": {
+            "type": "f8",
+            "fillvalue": -9999,
+            "dims": ["nlake"],
+            "attributes": {
+                "long_name": "the maximum lake level above which water transfers will not be allowed due to the safety",
+                "units": "meter",
+                "valid_min": 0,
+                "valid_max": 5000
+            }
+        }
+    }
+}
+
+

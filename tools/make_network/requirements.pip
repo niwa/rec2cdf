@@ -1,0 +1,5 @@
+geopandas
+numpy
+h5py
+psycopg2-binary
+shapely

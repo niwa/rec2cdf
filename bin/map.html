@@ -1,0 +1,325 @@
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" crossorigin="" />
+<script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js" crossorigin=""></script>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<div id = "map" style="height: 100%; width: 100%;"></div>
+
+<script>
+
+    // Set up some css so the cursor can be changed to waiting cursor
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = 'body.wait *, body.wait { cursor: progress !important; }';
+    document.getElementsByTagName('head')[0].appendChild(style);
+
+    function waiting() {
+        document.body.classList.add("wait");
+    }
+
+    function ready() {
+        document.body.classList.remove("wait");
+    }
+
+    // Creating map options
+    var mapOptions = {
+        center: [-41.297, 174.79],
+        zoom: 8,
+	preferCanvas: false
+    }
+     
+    // Creating a map object
+    var map = new L.map('map', mapOptions);
+    document.getElementById('map').style.cursor = 'pointer'
+    map.on('dragstart', function () { document.getElementById('map').style.cursor = 'grab'; });
+    map.on('dragend', function () { document.getElementById('map').style.cursor = 'pointer'; });
+
+    // Creating a Layer object
+    var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+     
+    // Adding layer to the map
+    map.addLayer(layer);
+
+    // On top of OSM we have dnv layers (dnvx can do different // strahler),
+    // and dnv1, dnv2, and dnv3
+    var dnvxtiles =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "dnvx",
+        lake: 'true',
+        site: 'true',
+        dnv: 2,
+        order: 3, //$('#id_order').val(),
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 0.85
+    });
+
+    var dnv1tiles =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "dnv1",
+        order: 1, //$('#id_order').val(),
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 0.85
+    });        // start without DNV1 on the map
+
+    var dnv2tiles =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "dnv2",
+        order: 1, //$('#id_order').val(),
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 0.85
+    });
+    dnv2tiles.addTo(map);
+
+    var dnv3tiles =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "dnv3",
+        order: 1, //$('#id_order').val(),
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 0.85
+    });        // start without DNV3 on the map
+
+    var lakes =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "lakes",
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 1
+    });
+    lakes.addTo(map);
+
+    var regions =
+        L.tileLayer.wms('http://ms.nzwam.nz/mapserver/?map=/hydrodesk/dnv.map', {
+        layers: "regions",
+        format: 'image/png',
+        transparent: true,
+        maxZoom: 20,
+        minZoom: 7,
+        opacity: 1
+    });
+    regions.addTo(map);
+
+    // These layers will hold the clicked on reach/watershed
+    var selpane = map.createPane("SelPane");               
+    var tracepane = map.createPane("TracePane");               
+    var truncatepane = map.createPane("TruncatePane");               
+    var wshedpane = map.createPane("WShedPane");
+    var siteflowpane = map.createPane("SiteFlowPane");
+    var siterainpane = map.createPane("SiteRainPane");
+    var sitesmpane = map.createPane("SiteSMPane");
+    var sitetemppane = map.createPane("SiteTempPane");
+    selpane.style.zIndex = 401;
+    tracepane.style.zIndex = 402;
+    truncatepane.style.zIndex = 403;
+    wshedpane.style.zIndex = 404;
+    siteflowpane.style.zIndex = 405;
+    siterainpane.style.zIndex = 405;
+    sitesmpane.style.zIndex = 405;
+    sitetemppane.style.zIndex = 405;
+    var sellayer = L.geoJson(null, {                       
+       style: function (feature) {                               
+          return {color: '#ff0000', pane: "SelPane"};     
+       },                     
+    });                                                              
+    sellayer.addTo(map);                                    
+    var tracelayer = L.geoJson(null, {                       
+       style: function (feature) {                               
+          return {color: '#ff0000', pane: "TracePane"};     
+       },                     
+    });
+    tracelayer.addTo(map);                                    
+    var truncatelayer = L.geoJson(null, {                       
+       style: function (feature) {                               
+          return {color: '#000000', pane: "TruncatePane"};     
+       },                     
+    });
+    truncatelayer.addTo(map);                                    
+    var wshedlayer = L.geoJson(null, {
+       style: function (feature) {
+          return {color: '#ff00ff', pane: "WShedPane"};
+       }, 
+    });
+    wshedlayer.addTo(map);
+    function siteconfig(v) {
+	return {
+            style: function (feature) {
+                return {pane: "Site" + v + "Pane"};
+            },
+            onEachFeature: function onEachFeature(feature, layer) {
+                if (feature.properties && feature.properties.popupContent) {
+                layer.bindPopup(feature.properties.popupContent);
+                }
+            },
+            pointToLayer: function (feature, latlng) {
+                switch (feature.properties.var) {
+                case 'flow':
+                    fcol = '#24638c';    // blueish
+                    break;
+                case 'rain':
+                    fcol = '#add8e6';    // light blue
+                    break;
+                case 'temp':
+                    fcol = '#ff0000';    // red
+                    break;
+                case 'sm':
+                    fcol = '#ffa500';    // orange
+                    break;
+                default:
+                    fcol = '#000000';    // black
+                }
+                return L.circleMarker(latlng,
+                {
+                    radius : 4,
+                    fillColor : fcol,
+                    color : "#000",
+                    weight : 1,
+                    opacity : 1,
+                    fillOpacity : 0.8
+                });
+            }
+        }
+    }
+    var siteflowlayer = L.geoJson(null, siteconfig('Flow'));
+    var siterainlayer = L.geoJson(null, siteconfig('Rain'));
+    var sitesmlayer = L.geoJson(null, siteconfig('SM'));
+    var sitetemplayer = L.geoJson(null, siteconfig('Temp'));
+    siteflowlayer.addTo(map);
+    siterainlayer.addTo(map);
+    sitesmlayer.addTo(map);
+    sitetemplayer.addTo(map);
+
+	// Initialise the FeatureGroup to store editable layers
+	var editableLayers = new L.FeatureGroup();
+	map.addLayer(editableLayers);
+
+	// Initialise the draw control and pass it the FeatureGroup of editable layers
+	var drawControl = new L.Control.Draw(
+		{
+	  position: 'topleft',
+	  draw: {
+	    polygon: {
+	      shapeOptions: {
+		color: '#ff0000'
+	      }
+	    },
+	    polyline: false,
+	    circle: false,
+	    marker: false,
+	    rectangle: false,
+	    circlemarker: false,
+	  },
+	  edit: {
+	    featureGroup: editableLayers, //REQUIRED!!
+		edit: true,
+	    remove: true
+	  }
+	}
+	);
+	map.addControl(drawControl);
+
+	map.on('draw:drawstart', function(e) {
+		// Delete current draw layers so only one poly at a time
+	  	editableLayers.clearLayers();
+	});
+
+	map.on('draw:created', function(e) {
+        	backend.poly_created(JSON.stringify(e.layer.getLatLngs()));
+	  	editableLayers.addLayer(e.layer);
+	});
+
+	map.on('draw:edited', function(e) {
+		e.layers.eachLayer(function (layer) {
+        		backend.poly_created(JSON.stringify(layer.getLatLngs()));
+		});
+	});
+
+	// when user clicks the toolbar suspend usual left/right click behaviour
+	map.on('draw:toolbaropened', function(e) {
+		map.off('click');
+		map.off('contextmenu');
+	});
+	map.on('draw:toolbarclosed', function(e) {
+		map.on('click', left_click);
+		map.on('contextmenu', right_click);
+	});
+
+
+    // dnv1/dnv2 is not controlled via normal layer control
+    L.control.layers(
+        {},
+        {
+            'Lakes': lakes, 'Regions': regions,
+            'Flow Sites': siteflowlayer,
+            'Rain Sites': siterainlayer,
+            'SM Sites': sitesmlayer,
+            'Temp Sites': sitetemplayer,
+	}
+    ).addTo(map);
+
+    // int, int, 0 or 1, 0 or 1
+    function update_dnvtiles(dnv, order, lakes, sites) {
+        if ( order == 1 ) {
+            if ( dnv == 1 ) {
+                dnvxtiles.remove();
+                dnv3tiles.remove();
+                dnv2tiles.remove();
+                dnv1tiles.addTo(map);
+            } else if ( dnv == 2 ) {
+                dnvxtiles.remove();
+                dnv1tiles.remove();
+                dnv3tiles.remove();
+                dnv2tiles.addTo(map);
+            } else {
+                dnvxtiles.remove();
+                dnv1tiles.remove();
+                dnv2tiles.remove();
+                dnv3tiles.addTo(map);
+            }
+        } else {
+            dnv3tiles.remove();
+            dnv2tiles.remove();
+            dnv1tiles.remove();
+            dnvxtiles.setParams({'dnv': dnv});
+            dnvxtiles.setParams({'order': order});
+	    dnvxtiles.setParams({'lake': lakes})
+            dnvxtiles.setParams({'site': sites})
+            dnvxtiles.addTo(map);
+        }
+    }
+
+    function clear_geom() {
+        sellayer.clearLayers();
+        tracelayer.clearLayers();
+        truncatelayer.clearLayers();
+        wshedlayer.clearLayers();
+    }
+
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+        window.backend = channel.objects.backend;
+    	window.backend.loaded_slot();
+    });
+    function left_click(e) {
+        backend.left_click(e.latlng.lng, e.latlng.lat)
+    }
+    function right_click(e) {
+        backend.right_click(e.latlng.lng, e.latlng.lat)
+    }
+    map.on('click', left_click);
+    map.on('contextmenu', right_click);
+</script>

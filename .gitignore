@@ -1,0 +1,6 @@
+README.pdf
+build/
+dist/
+Output/
+__pycache__
+.pytest_cache

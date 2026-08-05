@@ -1,0 +1,108 @@
+<h1>Rec2CDF GUI Manual</h1>
+
+This manual does not document rec2cdf, rather the GUI to the command line
+program rec2cdf.  It is assumed you have some familiarity with what rec2cdf is
+for and roughly how it operates.
+
+<h2>Database setup</h2>
+
+The command line program rec2cdf needs to connect to the REC databases (rec1,
+dn25, and the multiple dn3_* ones).  Also the map in this GUI needs to connect
+to a database that holds the river line geometries.  This is to allow tracing
+of the network.  Go to File -> Database to enter the hostname, username, and
+password.  You will only have to do this once, for the hostname and username
+are saved in the preferences for this GUI, and the password is saved in your
+keychain.
+
+<p>Good defaults to use are wellhydrodb.niwa.local and hydrology_user.  The
+password is available in the TopNet teampass.
+
+<h2> Map </h2>
+
+The map on the right hand side of the GUI should display the current river
+network.  You can <i>left</i>-click on a reach to add that catchment to the set
+of catchments that rec2cdf will build a spatial file for (you can
+<i>left</i>-click it again to remove from consideration).  You can
+<i>right</i>-click a reach if you wish to truncate the network at that point
+(<i>right</i>-click again if you want to remove the truncation there).  If you
+want to trace the network, go to Tools -> Trace, it can be quite slow, but is
+not necessary for rec2cdf.
+
+<h2> Parameters </h2>
+
+<ul>
+
+    <li>DN.  This is the digital network version.  The map should automatically
+        update as you change this.
+    </li>
+
+    <li>Order.  The Strahler order of aggregation.
+    </li>
+
+    <li>Break at lakes.  The resulting spatial file will be broken at lakes.
+    </li>
+
+    <li>Break at sites.  The resulting spatial file will be broken at sites.
+    </li>
+
+    <li>Regional. This is only used if you want the spatial file to contain
+        information about an entire region.  If you do want to do this, make
+        sure Reach IDs has at least one reach in your region of interest and
+        select this checkbox.
+    </li>
+
+    <li>Reach IDs.  This is a comma separated list of reach IDs
+        that define the catchments that rec2cdf will be build the spatial file
+        for.  You can set these by clicking on the map, or by typing in the
+        reach ID if you know them.
+    </li>
+
+    <li>Truncate IDs.  This is a comma separated list of reach IDs
+        that stop upstream tracing. You can set these by clicking on the map,
+        or by typing in the reach ID if you know them.
+    </li>
+
+    <li>Spatial file.  Click the box to select a filename for your spatial
+        file.
+    </li>
+    
+</ul>
+
+<h2> Running rec2cdf </h2>
+
+Click the GO button at the bottom and rec2cdf should start up with whatever
+parameters you have set above.  Output from rec2cdf should appear in the bottom
+text area.  A log file is automatically generated based on your spatial file
+name, but without the .nc and with a .log.  You can check in there for errors.
+
+<h2> Polygon selection </h2>
+
+Clicking on the pentagon icon in the toolbar on the left hand side of the map
+allows you to specify a polygon.  All reaches at the most downstream side of
+this polygon will be added to the Reach IDs field.  All reaches feeding into
+the polygon will be added as truncates to the Truncate IDs.  After creating
+this polygon it serves no further purpose because you have the outlets and
+truncates defined.  However if you want to modify the selection you can click
+the Edit icon and drag the polygon vertices to a new location, this will add
+more Reach and Truncate IDs (so you probably want to delete those two fields
+first).
+
+<h2> Tracing </h2>
+
+After clicking your catchment reaches (and possibly truncation reaches) you can
+go to Tools -> Trace for the upstream trace to be performed.  It takes a while,
+is not necessary for spatial file generation, but is handy for viewing your
+catchment.
+
+<h4> Saving trace </h4>
+
+After generating a trace, you can save it by going to Tools -> Save trace.
+Here you can set a Geopackage file name for the trace to be saved into.  Three
+layers will be saved: the river lines, watersheds, and the entire catchment
+polygon.
+
+<h4> Clear trace cache </h4>
+
+Since tracing can take a while all traces are saved in a memory and on disk
+cache.  Going to Tools -> Clear trace cache removes all these saved traces.
+You may want to do this if the underlying river network has changed.
