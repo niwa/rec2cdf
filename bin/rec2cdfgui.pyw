@@ -591,7 +591,6 @@ class Window(QMainWindow):
 
         # versions from github
         ivers = self.get_installable_versions()
-        print(ivers)
         if not ivers:
             return
 
@@ -623,7 +622,7 @@ class Window(QMainWindow):
 
         # Start download
         try:
-            installer = download_version(ivers[0])
+            installer = __download_version(ivers[0])
         except Exception as e:
             print(f"Download failed: {e}")
             return
