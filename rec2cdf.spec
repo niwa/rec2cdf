@@ -38,14 +38,16 @@
 #    'pandas._libs.tslibs.timedeltas',
 #]
 
+from PyInstaller.utils.hooks import copy_metadata
+tzdatas = copy_metadata("pytz")
 
 block_cipher = None
 
 a = Analysis(['bin\\rec2cdfgui.pyw'],
              pathex=[],
              binaries=[],
-             datas=[('bin/rec2cdf.py', '.'), ('bin/smap.py', '.'), ('bin/attr_info.jinja', '.'), ('bin/map.html', '.'), ('bin/version.txt', '.'), ('bin/help.html', '.'), ('etc/rec2cdf.ico', '.')],
-             hiddenimports=['cftime', 'netCDF4', 'telnetlib', 'tenacity', 'fiona'],
+             datas=[('bin/rec2cdf.py', '.'), ('bin/smap.py', '.'), ('bin/attr_info.jinja', '.'), ('bin/map.html', '.'), ('bin/version.txt', '.'), ('bin/help.html', '.'), ('etc/rec2cdf.ico', '.'), tzdatas[0]],
+             hiddenimports=['pytz', 'cftime', 'netCDF4', 'telnetlib', 'tenacity', 'fiona'],
              hookspath=[],
              hooksconfig={},
              runtime_hooks=[],

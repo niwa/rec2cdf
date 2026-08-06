@@ -45,7 +45,7 @@ with anything!
     ```
     python -m venv ~/Documents/venvs/rec2cdf
     . ~/Documents/venvs/rec2cdf/Scripts/activate
-    pip install --upgrade pip
+    python -m pip install --upgrade pip
     pip install -r requirements.pip
     ```
 

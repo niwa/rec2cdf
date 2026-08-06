@@ -10,6 +10,8 @@ import configparser
 import keyring
 import logging
 import atexit
+import platformdirs
+import requests
 from packaging import version
 import pandas as pd
 
@@ -530,6 +532,29 @@ class Window(QMainWindow):
         with open(self.cfile, "w") as cfh:
             self.cp.write(cfh)
 
+    def get_installable_versions(self):
+        """Return a sorted list of [{'version': version, 'name': name, 'url': url}]"""
+
+        url = "https://api.github.com/repos/niwa/rec2cdf/releases"
+        headers = {"Accept": "application/vnd.github+json"}
+
+        try:
+            r = requests.get(url, headers=headers)
+            r.raise_for_status()
+            releases = []
+            for release in r.json():
+                releases.append(
+                    {
+                        "version": release["tag_name"],
+                        "name": release["assets"][0]["name"],
+                        "url": release["assets"][0]["browser_download_url"],
+                    }
+                )
+        except Exception as exp:
+            return []
+
+        return sorted(releases, key=lambda i: version.Version(i["version"]), reverse=True)
+
     def possibly_update(self):
         def __get_ver(fn):
             ver = None
@@ -538,14 +563,36 @@ class Window(QMainWindow):
                     ver = ma.group(1)
             return ver
 
-        # where we might find newer versions
-        ibase = pathlib.Path("//niwa.local/groups/christchurch/Hydro/rec2cdf")
+        def __download_version(vnu: dict):
+            """Download installer and return its path.
 
-        # see if there is a version file and installer on the system
-        sys_ver = None
-        if (ibase / "version.txt").is_file() and (ibase / "rec2cdfsetup.exe").is_file():
-            sys_ver = __get_ver(ibase / "version.txt")
-        if not sys_ver:
+            Parameters
+            ----------
+            vnu: dict
+                {'version', 'name', 'url'}
+
+            Returns
+            -------
+            pathlib.Path
+                Path to downloaded installer
+            """
+
+            ddir = pathlib.Path(platformdirs.user_downloads_dir())
+            installer = ddir / vnu["name"]
+
+            with requests.get(vnu["url"], stream=True) as r:
+                r.raise_for_status()
+
+                with open(installer, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+
+            return installer
+
+        # versions from github
+        ivers = self.get_installable_versions()
+        print(ivers)
+        if not ivers:
             return
 
         # my version
@@ -561,7 +608,7 @@ class Window(QMainWindow):
         # store my version
         self.version = my_ver
 
-        if version.parse(sys_ver) <= version.parse(my_ver):
+        if version.parse(ivers[0]['version']) <= version.parse(my_ver):
             return
 
         res = QMessageBox.question(
@@ -574,7 +621,13 @@ class Window(QMainWindow):
         if res != QMessageBox.Yes:
             return
 
-        installer = ibase / "rec2cdfsetup.exe"
+        # Start download
+        try:
+            installer = download_version(ivers[0])
+        except Exception as e:
+            print(f"Download failed: {e}")
+            return
+
         atexit.register(os.execl, installer, installer)
         sys.exit(0)
 
